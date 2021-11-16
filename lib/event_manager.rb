@@ -56,35 +56,20 @@ end
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
-
-
-def most_common_hour
+def reg_date_time(regex)
   reg_hour_array = []
   contents.each do |row|
     reg_date = row[:regdate]
-    reg_hour = Time.strptime(reg_date, '%M/%d/%y %k:%M').strftime('%k')
+    reg_hour = Time.strptime(reg_date, '%M/%d/%y %k:%M').strftime(regex)
     reg_hour_array.push(reg_hour)
   end
-  most_common_hour = reg_hour_array.reduce(Hash.new(0)) do |key, value|
+  most_common_datetime = reg_hour_array.reduce(Hash.new(0)) do |key, value|
     key[value] += 1
     key
   end
-  most_common_hour.max_by { |_k, v| v }[0]
+  most_common_datetime.max_by { |_k, v| v }[0]
 end
 
-def most_common_reg_day
-  reg_day_array = []
-  contents.each do |row|
-    reg_date = row[:regdate]
-    reg_day = Time.strptime(reg_date, '%M/%d/%y %k:%M').strftime('%A')
-    reg_day_array.push(reg_day)
-  end
-  most_common_day = reg_day_array.reduce(Hash.new(0)) do |hash, day|
-    hash[day] += 1
-    hash
-  end
-  most_common_day.max_by { |_k, v| v }[0]
-end
 
 puts "\nThe most common hour of registration is hour #{reg_date_time('%k')}:00."
 
