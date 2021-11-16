@@ -53,27 +53,29 @@ def contents
   )
 end
 
-template_letter = File.read('form_letter.erb')
-erb_template = ERB.new template_letter
-
-def reg_date_time(regex)
-  reg_hour_array = []
+def reg_datetime(regex)
+  reg_date_array = []
   contents.each do |row|
     reg_date = row[:regdate]
-    reg_hour = Time.strptime(reg_date, '%M/%d/%y %k:%M').strftime(regex)
-    reg_hour_array.push(reg_hour)
+    reg_datetime = Time.strptime(reg_date, '%M/%d/%y %k:%M').strftime(regex)
+    reg_date_array.push(reg_datetime)
   end
-  most_common_datetime = reg_hour_array.reduce(Hash.new(0)) do |key, value|
+  most_common_datetime(reg_date_array)
+end
+
+def most_common_datetime(reg_date_array)
+  most_common_datetime = reg_date_array.reduce(Hash.new(0)) do |key, value|
     key[value] += 1
     key
   end
   most_common_datetime.max_by { |_k, v| v }[0]
 end
 
+puts "\nThe most common hour of registration is hour #{reg_datetime('%k')}:00."
+puts "\nThe most common day of registration is #{reg_datetime('%A')}."
 
-puts "\nThe most common hour of registration is hour #{reg_date_time('%k')}:00."
-
-puts "\nThe most common day of registration is #{reg_date_time('%A')}."
+# template_letter = File.read('form_letter.erb')
+# erb_template = ERB.new template_letter
 
 # contents.each do |row|
 #   id = row[0]
